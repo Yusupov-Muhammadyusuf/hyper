@@ -1,32 +1,69 @@
 # Contributing to Hyper
 
-Thank you for your interest in contributing to **Hyper**! We welcome contributions from the community, whether it's reporting bugs, improving documentation, or proposing new language features.
+Thanks for contributing. This is a short getting-started guide. For a full toolchain walkthrough, see [Building from source](doc/building.md). What CI runs on every PR is in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
-## How to Contribute
+## Prerequisites
 
-### 1. Reporting Bugs & Feature Ideas
-* Before creating a new issue, check the existing [Issues](https://github.com/Yusupov-Muhammadyusuf/hyperlang/issues) to avoid duplicates.
-* When reporting a bug, please include:
-  * Your operating system and environment.
-  * Clear steps to reproduce the issue.
-  * Expected vs. actual behavior.
+- [Rust](https://www.rust-lang.org/tools/install) (stable) — `cargo` and `rustc`
+- Git
+- A C compiler (`cc`, `clang`, or `gcc`) if you use `compile --emit-exe`
 
-### 2. Code Contributions
-If you want to add code or fix bugs:
-1. **Fork** the repository.
-2. Make your changes and commit them with clear, concise messages using standard prefixes (e.g., `feat:`, `fix:`, `docs:`).
-3. Push to your fork and submit a **Pull Request (PR)** to the `main` branch.
+On Windows, [WSL](https://learn.microsoft.com/en-us/windows/wsl/) is the smoothest path; native Windows can `cargo build`, but AOT linking may need MSVC or MinGW.
 
-## Commit Conventions
+## Build
 
-We follow standard commit message conventions to keep our git history clean, readable, and easy to parse automatically.
+```bash
+git clone https://github.com/muhammadyusufpov/hyper.git
+cd hyper
+cargo build
+```
 
-For guidelines on commit messages and history management, see [doc/COMMIT_CONVENTION.md](doc/COMMIT_CONVENTION.md).
+The debug binary is `target/debug/hyper`. Use `cargo build --release` for a release binary.
 
-## Code Guidelines
+## Run tests
 
-* **Commit Messages:** Contributors must create commit messages with a [prefix](doc/COMMIT_CONVENTION.md) (e.g., `feat:`, `fix:`, `docs:`, `ci:`).
-* **Readability First:** Keep the core interpreter code clean, well-commented, and maintainable.
-* **Testing:** Ensure your changes do not break existing interpreter behaviors.
+```bash
+cargo test
+```
 
-> **Note:** Large architectural changes or major syntax modifications should be discussed in an [issue](https://github.com/Yusupov-Muhammadyusuf/hyperlang/issues) before submitting a PR. 
+## Run smoke tests
+
+Interpreter and compiler JIT on the core smoke program:
+
+```bash
+cargo run -- run ci/smoke.hyp
+cargo run -- compile ci/smoke.hyp
+```
+
+CI also runs other programs under `ci/` (I/O, JSON, `break` / `continue`, `--emit-exe`, and run/compile output parity). See [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+## Code style
+
+```bash
+cargo fmt
+cargo clippy
+```
+
+Use the standard Rust toolchain formatters. Keep interpreter and compiler code readable; match the style of the file you are editing.
+
+## Commit messages
+
+Use [conventional commits](doc/COMMIT_CONVENTION.md). Start the subject with a prefix and no trailing period:
+
+- `feat:` — new feature
+- `fix:` — bug fix
+- `docs:` — documentation
+- `ci:` — CI, GitHub Actions, or smoke programs under `ci/`
+- `test:`, `refactor:`, `style:`, `chore:` — also allowed; see the convention doc
+
+## How to open a PR
+
+1. Fork the repository.
+2. Create a branch for your change.
+3. Make the change, run `cargo test` and the smoke commands above, then commit with a conventional prefix.
+4. Push the branch to your fork.
+5. Open a pull request against `main`.
+
+Before filing a bug, search existing [issues](https://github.com/Yusupov-Muhammadyusuf/hyperlang/issues). Include OS, steps to reproduce, and expected vs actual behavior.
+
+Discuss large architectural or syntax changes in an issue before opening a PR.
